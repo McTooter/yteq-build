@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = YTEQ
 
-YTEQ_FILES = Tweak.x YTEQAudioEngine.m YTEQSettingsViewController.m
+YTEQ_FILES = YTEQ/Tweak.x YTEQ/YTEQAudioEngine.m YTEQ/YTEQSettingsViewController.m
 YTEQ_FRAMEWORKS = AVFoundation AudioToolbox Accelerate
 YTEQ_CFLAGS = -fobjc-arc
 
