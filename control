@@ -1,0 +1,9 @@
+Package: com.yteq.tweak
+Name: YTEQ
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Description: 10-band EQ + preamp for YouTube (MTAudioProcessingTap)
+Maintainer: you
+Author: you
+Section: Tweaks
+Depends: mobilesubstrate
