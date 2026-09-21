@@ -1,0 +1,35 @@
+name: Build YTEQ
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'YTEQ/**'
+      - 'Makefile'
+      - 'control'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Theos
+        run: |
+          brew install ldid xz 2>/dev/null || true
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+      - name: Build
+        run: |
+          export THEOS=$HOME/theos
+          make package FINALPACKAGE=1
+      - name: Extract dylib
+        run: |
+          ls -R .theos packages || true
+          find .theos -name "YTEQ.dylib" -exec cp {} ./YTEQ.dylib \;
+          echo -e "{ Filter = { Bundles = ( \"com.google.ios.youtube\" ); }; }" > YTEQ.plist
+          ls -lh YTEQ.*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: YTEQ-sideloadly
+          path: |
+            YTEQ.dylib
+            YTEQ.plist
