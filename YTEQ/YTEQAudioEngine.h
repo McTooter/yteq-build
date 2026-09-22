@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <Accelerate/Accelerate.h>
+#import <MediaToolbox/MediaToolbox.h>
+#import <CoreMedia/CoreMedia.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
