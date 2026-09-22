@@ -1,6 +1,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioUnit/AudioUnit.h>
+#import <MediaToolbox/MediaToolbox.h>
+#import <CoreMedia/CoreMedia.h>
 #import "YTEQAudioEngine.h"
 #import "YTEQSettingsViewController.h"
 
@@ -15,7 +17,12 @@ static OSStatus YTEQRenderWrapper(void *inRefCon,
     AudioUnitRenderActionFlags *ioActionFlags,
     const AudioTimeStamp *inTimeStamp,
     UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData) {
-    OSStatus r = g_origCallback.inputProc(inRefCon, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
+    OSStatus r = noErr;
+    if (g_origCallback.inputProc) {
+        r = g_origCallback.inputProc(inRefCon, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
+    } else {
+        return noErr;
+    }
     if (r == noErr && ioData) {
         @try {
             [[YTEQAudioEngine shared] processBuffer:ioData frames:inNumberFrames sampleRate:g_hwSampleRate channels:ioData->mNumberBuffers];
