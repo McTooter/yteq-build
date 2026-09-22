@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Install Theos (official installer: toolchain + SDKs)
+      - name: Install Theos + SDKs (official installer)
         run: |
           bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)" || true
           brew install ldid xz dpkg 2>/dev/null || true
