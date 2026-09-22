@@ -12,8 +12,9 @@ typedef struct {
     double x1,x2,y1,y2;
 } YTEQBiquad;
 
-@interface YTEQAudioEngine ()
-@property (nonatomic, assign) YTEQBiquad filters[YTEQ_NUM_BANDS][2]; // [band][channelL/R, max 2; extra channels reuse 0]
+@interface YTEQAudioEngine () {
+    YTEQBiquad _filters[YTEQ_NUM_BANDS][2]; // [band][channel L/R, max 2; extra channels reuse 0]
+}
 @property (nonatomic, assign) double lastSampleRate;
 @property (nonatomic, strong) NSLock *lock;
 @end
