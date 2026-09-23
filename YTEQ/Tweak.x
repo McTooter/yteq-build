@@ -13,6 +13,10 @@
 static AURenderCallbackStruct g_origCallback = {0, NULL};
 static double g_hwSampleRate = 48000.0;
 
+@interface AVPlayerItem (YTEQ)
+- (void)yteq_attachTap;
+@end
+
 static OSStatus YTEQRenderWrapper(void *inRefCon,
     AudioUnitRenderActionFlags *ioActionFlags,
     const AudioTimeStamp *inTimeStamp,
