@@ -143,15 +143,14 @@ static void YTEQTapProcess(MTAudioProcessingTapRef tap, CMItemCount frames, MTAu
 
 - (MTAudioProcessingTapRef)createTapWithSampleRate:(double)sampleRate channels:(UInt32)channels {
     (void)sampleRate; (void)channels;
-    MTAudioProcessingTapCallbacks cbs = {
-        .version = kMTAudioProcessingTapCallbacksVersion_0,
-        .clientInfo = NULL,
-        .init = YTEQTapInit,
-        .finalize = YTEQTapFinalize,
-        .prepare = YTEQTapPrepare,
-        .unprepare = YTEQTapUnprepare,
-        .process = YTEQTapProcess
-    };
+    MTAudioProcessingTapCallbacks cbs = {0};
+    cbs.version = kMTAudioProcessingTapCallbacksVersion_0;
+    cbs.clientInfo = NULL;
+    cbs.init = YTEQTapInit;
+    cbs.finalize = YTEQTapFinalize;
+    cbs.prepare = YTEQTapPrepare;
+    cbs.unprepare = YTEQTapUnprepare;
+    cbs.process = YTEQTapProcess;
     MTAudioProcessingTapRef tap = NULL;
     OSStatus err = MTAudioProcessingTapCreate(kCFAllocatorDefault, &cbs, kMTAudioProcessingTapCreationFlag_PreEffects, &tap);
     if (err || !tap) return NULL;
