@@ -31,8 +31,7 @@ static OSStatus YTEQRenderWrapper(void *inRefCon,
     return r;
 }
 
-%hookf(OSStatus, AudioUnitSetProperty, AudioUnit inUnit, AudioUnitPropertyID inProp,
-    AudioUnitScope inScope, AudioUnitElement inElement, const void *inData, UInt32 inDataSize) {
+%hookf(OSStatus, AudioUnitSetProperty, AudioUnit inUnit, AudioUnitPropertyID inProp, AudioUnitScope inScope, AudioUnitElement inElement, const void *inData, UInt32 inDataSize) {
     // cache HW sample rate
     if (inProp == kAudioUnitProperty_StreamFormat && inData && inDataSize >= sizeof(AudioStreamBasicDescription)) {
         const AudioStreamBasicDescription *fmt = (const AudioStreamBasicDescription *)inData;
