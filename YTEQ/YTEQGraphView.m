@@ -94,8 +94,8 @@ static const CGFloat kTouchSlop    = 30.0;
 }
 
 - (CGPoint)pointForBandAtIndex:(NSInteger)index {
-    return CGPointMake(xForFreq(_bands[index].freq),
-                       yForDB(_preampDB + _bands[index].gainDB));
+    return CGPointMake([self xForFreq:_bands[index].freq],
+                       [self yForDB:_preampDB + _bands[index].gainDB]);
 }
 
 #pragma mark - Response
@@ -165,7 +165,7 @@ static const CGFloat kTouchSlop    = 30.0;
     if (steps > 1024) steps = 1024;
 
     CGMutablePathRef line = CGPathCreateMutable();
-    CGPathRef fill = CGPathCreateMutable();
+    CGMutablePathRef fill = CGPathCreateMutable();
 
     CGFloat firstX = CGRectGetMinX(p);
     double firstFreq = [self freqForX:firstX];
@@ -295,9 +295,9 @@ static const CGFloat kTouchSlop    = 30.0;
 
         NSString *text;
         if (freq >= 1000.0) {
-            text = [NSString stringWithFormat:@"%gk", (int)round(freq / 1000.0)];
+            text = [NSString stringWithFormat:@"%dk", (int)lround(freq / 1000.0)];
         } else {
-            text = [NSString stringWithFormat:@"%d", (int)round(freq)];
+            text = [NSString stringWithFormat:@"%d", (int)lround(freq)];
         }
         CGSize size = [text sizeWithAttributes:tiny];
         CGFloat x = [self xForFreq:freq] - size.width / 2.0;

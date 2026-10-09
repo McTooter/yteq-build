@@ -424,7 +424,7 @@ static NSString *YTEQFormatDB(double db) {
     [_preampRow setValue:engine.preampDB];
     _preampRow.translatesAutoresizingMaskIntoConstraints = NO;
     __weak typeof(self) weakSelf = self;
-    _preampRow.onChange = ^(double value) { weakSelf.preampRowChanged:value; };
+    _preampRow.onChange = ^(double value) { [weakSelf preampRowChanged:value]; };
     _preampRow.onCommit = ^{ [weakSelf commitSliderEdits]; };
 
     [preampCard addSubview:preampTitle];

@@ -20,11 +20,13 @@ NS_ASSUME_NONNULL_BEGIN
 // call through. It is only written when a previous implementation was found; a class that
 // declares the selector without an implementation (or does not declare it at all) leaves
 // *original untouched, so callers must check respondsToSelector: before calling through.
-FOUNDATION_EXPORT void YTEQSwizzle(Class cls, SEL selector, IMP replacement, IMP *_Nullable original);
+FOUNDATION_EXPORT void YTEQSwizzle(Class cls, SEL selector, IMP replacement,
+                                   IMP *_Nullable _Nullable original);
 
 // Swizzles +selector only if cls (or a superclass) actually implements it. Returns YES if
 // the swizzle was installed. Used for the private AVFoundation/UIKit selectors, which are
 // only present on some OS versions.
-FOUNDATION_EXPORT BOOL YTEQSwizzleIfPresent(Class cls, SEL selector, IMP replacement, IMP *_Nullable original);
+FOUNDATION_EXPORT BOOL YTEQSwizzleIfPresent(Class cls, SEL selector, IMP replacement,
+                                            IMP *_Nullable _Nullable original);
 
 NS_ASSUME_NONNULL_END

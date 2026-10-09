@@ -52,7 +52,7 @@ typedef struct {
 } YTEQUnitSlot;
 
 static YTEQUnitSlot   g_slots[YTEQ_MAX_SLOTS];
-static os_unfair_lock g_slotLock = OS_UNFAIRS_LOCK_INIT;
+static os_unfair_lock g_slotLock = OS_UNFAIR_LOCK_INIT;
 static _Atomic(BOOL)  g_sawAudio = false;
 
 // Registers (or refreshes) the slot for `unit` and returns its index + 1, which is what we

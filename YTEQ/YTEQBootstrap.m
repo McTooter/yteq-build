@@ -130,11 +130,15 @@ static void YTEQAppendSectionItems(id manager, SEL category) {
     }
 }
 
-typedef void (*YTEQUpdateSectionIMP)(id, SEL, SEL, id);
+// The category argument's type is not knowable from outside YouTube, so it is carried as
+// id and passed straight back through. That keeps the hook correct whether YouTube passes
+// an NSString, an NSNumber or anything else, and avoids the ARC error for coercing a SEL
+// to id.
+typedef void (*YTEQUpdateSectionIMP)(id, SEL, id, id);
 
 static YTEQUpdateSectionIMP g_originalUpdateSection = NULL;
 
-static void YTEQUpdateSectionForCategory(id self, SEL _cmd, SEL category, id entry) {
+static void YTEQUpdateSectionForCategory(id self, SEL _cmd, id category, id entry) {
     if (g_originalUpdateSection != NULL) {
         g_originalUpdateSection(self, _cmd, category, entry);
     }
@@ -170,7 +174,9 @@ static void YTEQPresentPanel(void) {
     UIApplication *app = [UIApplication sharedApplication];
     for (UIScene *scene in app.connectedScenes) {
         if (scene.activationState != UISceneActivationStateForegroundActive) continue;
-        for (UIWindow *candidate in scene.windows) {
+        // -windows is on UIWindowScene, not on the UIScene superclass.
+        if (![scene isKindOfClass:[UIWindowScene class]]) continue;
+        for (UIWindow *candidate in ((UIWindowScene *)scene).windows) {
             if (candidate.isKeyWindow) { keyWindow = candidate; break; }
         }
         if (keyWindow != nil) break;
@@ -250,7 +256,7 @@ static void YTEQOpenPanel(id self, SEL _cmd, id sender) {
 
         YTEQInstallSettingsSectionHook();
         [YTEQBootstrap installSettingsSectionWithRetry:6];
-        YTEQInstallNavButton();
+        [YTEQBootstrap installNavButton];
     });
 }
 

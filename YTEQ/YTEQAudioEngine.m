@@ -275,10 +275,6 @@ static inline double YTEQRunStage(YTEQStage *s, double x) {
     return y;
 }
 
-static inline BOOL YTEQCoeffsAreIdentity(const YTEQCoeffs *c) {
-    return c->b0 == 1.0 && c->b1 == 0.0 && c->b2 == 0.0 && c->a1 == 0.0 && c->a2 == 0.0;
-}
-
 void YTEQAudioEngineProcess(YTEQState *state, float *samples, UInt32 frames,
                             UInt32 stride, UInt32 channels) {
     if (state == NULL || samples == NULL || frames == 0) return;
