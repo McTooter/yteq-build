@@ -42,6 +42,7 @@ all: universal
 universal:
 	@mkdir -p $(BUILD)
 	@for arch in $(ARCHS); do \
+	    mkdir -p $(BUILD)/$$arch; \
 	    echo "  CC  $(NAME) ($(arch))"; \
 	    xcrun clang -arch $$arch $(CFLAGS) $(LDFLAGS) $(SOURCES) \
 	        -o $(BUILD)/$$arch/$(NAME).dylib || exit 1; \

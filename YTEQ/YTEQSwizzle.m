@@ -1,6 +1,6 @@
 #import "YTEQSwizzle.h"
 
-void YTEQSwizzle(Class cls, SEL selector, IMP replacement, IMP *_Nullable original) {
+void YTEQSwizzle(Class cls, SEL selector, IMP replacement, IMP *original) {
     if (cls == Nil || selector == NULL || replacement == NULL) return;
 
     // Walk the hierarchy so an implementation inherited from a superclass is found.
@@ -37,7 +37,7 @@ void YTEQSwizzle(Class cls, SEL selector, IMP replacement, IMP *_Nullable origin
     class_addMethod(cls, selector, replacement, "v@:");
 }
 
-BOOL YTEQSwizzleIfPresent(Class cls, SEL selector, IMP replacement, IMP *_Nullable original) {
+BOOL YTEQSwizzleIfPresent(Class cls, SEL selector, IMP replacement, IMP *original) {
     if (cls == Nil || selector == NULL || replacement == NULL) return NO;
     if (class_getInstanceMethod(cls, selector) == NULL) return NO;
     YTEQSwizzle(cls, selector, replacement, original);
