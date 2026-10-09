@@ -624,6 +624,22 @@ static NSString * const kYTEQDefaultsKey = @"YTEQ.settings.v1";
     [self applyChangesResettingMemory:YES];
 }
 
+// Explicit getter: the value lives in core storage, not in an auto-synthesised ivar.
+// (Both accessors are custom, so no ivar is synthesised at all.)
+- (BOOL)enabled {
+    os_unfair_lock_lock(&YTEQCoreLock);
+    BOOL value = YTEQCoreStorage.enabled;
+    os_unfair_lock_unlock(&YTEQCoreLock);
+    return value;
+}
+
+- (double)preampDB {
+    os_unfair_lock_lock(&YTEQCoreLock);
+    double value = YTEQCoreStorage.preampDB;
+    os_unfair_lock_unlock(&YTEQCoreLock);
+    return value;
+}
+
 - (void)setPreampDB:(double)preampDB {
     preampDB = YTEQClamp(preampDB, YTEQ_MIN_PREAMP, YTEQ_MAX_PREAMP);
     os_unfair_lock_lock(&YTEQCoreLock);
