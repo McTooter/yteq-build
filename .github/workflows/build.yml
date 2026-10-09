@@ -1,37 +1,54 @@
 name: Build YTEQ
+
 on:
   workflow_dispatch:
   push:
     paths:
       - 'YTEQ/**'
       - 'Makefile'
-      - 'control'
+      - 'inject_yteq.py'
 
 jobs:
   build:
+    # macOS runner gives us the iOS SDK and Apple's clang. No Theos, no tweak framework:
+    # the dylib is built with plain clang exactly like VolumeBoostYT.dylib, so what gets
+    # tested here is what gets injected.
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Install Theos + SDKs (official installer)
+
+      - name: Show toolchain
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)" || true
-          brew install ldid xz dpkg 2>/dev/null || true
-          ls -d ~/theos 2>/dev/null || ls -d $HOME/theos
-          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          xcrun --sdk iphoneos --show-sdk-path
+          xcrun clang --version | head -1
+
       - name: Build
+        run: make
+
+      - name: Sanity-check the binary
         run: |
-          export THEOS=$HOME/theos
-          $THEOS/bin/update-theos 2>/dev/null || true
-          ls $THEOS/sdks || true
-          make package FINALPACKAGE=1
-      - name: Extract dylib
+          file YTEQ.dylib
+          # Must not link Substrate/ElleKit, or it will not load in a sideloaded IPA.
+          if otool -L YTEQ.dylib | grep -Eiq 'substrate|ellekit|libhooker'; then
+            echo "::error::dylib links a tweak framework, it will not load standalone"
+            exit 1
+          fi
+          otool -L YTEQ.dylib
+          # The interpose tuple is what makes the render-callback hook work; if it was
+          # stripped the EQ would silently do nothing.
+          if ! otool -s __DATA __interpose YTEQ.dylib | grep -q .; then
+            echo "::error::__DATA,__interpose is missing, AudioUnitSetProperty hook is dead"
+            exit 1
+          fi
+          otool -s __DATA __interpose YTEQ.dylib || true
+
+      - name: Package for Sideloadly
         run: |
-          ls -R .theos packages || true
-          # Theos lays out tweak dylib at .theos/obj/iphone/.../YTEQ.dylib
-          find .theos -name "YTEQ.dylib" -exec cp {} ./YTEQ.dylib \;
-          # minimal substrate plist for Sideloadly / ElleKit
-          echo -e "{ Filter = { Bundles = ( \"com.google.ios.youtube\" ); }; }" > YTEQ.plist
-          ls -lh YTEQ.*
+          # Only needed if the dylib is loaded by a Substrate-style loader rather than by
+          # Sideloadly's LC_LOAD_DYLIB injection. Harmless otherwise.
+          printf '{ Filter = { Bundles = ( "com.google.ios.youtube" ); }; }' > YTEQ.plist
+          ls -lh YTEQ.dylib YTEQ.plist
+
       - uses: actions/upload-artifact@v4
         with:
           name: YTEQ-sideloadly
