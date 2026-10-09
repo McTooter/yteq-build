@@ -76,7 +76,7 @@ typedef void (*YTEQSetSectionItemsFn)(id, SEL, id, id, id, id, id, BOOL);
 // -setSectionItems:forCategory:title:titleDescription:headerHidden:
 typedef void (*YTEQSetSectionItemsNoIconFn)(id, SEL, id, id, id, id, BOOL);
 
-static void YTEQAppendSectionItems(id manager, SEL category) {
+static void YTEQAppendSectionItems(id manager, id category) {
     if (manager == nil || category == NULL) return;
 
     Class builder = NSClassFromString(@"YTSettingsSectionItemManager");
